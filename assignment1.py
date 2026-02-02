@@ -1,19 +1,22 @@
+from pygam import LinearGAM, s, f
 import pandas as pd
-from prophet import Prophet
+
 
 data = pd.read_csv("https://github.com/dustywhite7/econ8310-assignment1/raw/main/assignment_data_train.csv")
 
-data = data[['Timestamp', 'trips']].rename(columns={'Timestamp': 'ds', 'trips': 'y'}).assign(ds=lambda df: pd.to_datetime(df['ds']))
 
-model = Prophet()
-model.add_seasonality(name='weekly', period=7, fourier_order=5)
-model.add_seasonality(name='daily', period=1, fourier_order=11)
-modelFit = model.fit(data)
+data['Timestamp'] = pd.to_datetime(data['Timestamp'])
 
-future = model.make_future_dataframe(periods=744)
-forecast = model.predict(future)
+x = data[['year', 'month', 'day', 'hour']]
+y = data['trips']
 
-plt = model.plot(forecast)
-comp = model.plot_components(forecast)
+model = LinearGAM(s(0) + s(1) + f(2) + f(3))
+modelFit = model.gridsearch(x.values, y)
 
-pred= forecast["yhat"].values[-744:]
+
+next_year = data['year'].max()
+jan_data = data[(data['year']==next_year) & (data['month']==1)]
+X_jan = jan_data[['year','month','day','hour']].values
+
+pred = modelFit.predict(X_jan)
+
