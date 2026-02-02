@@ -16,4 +16,4 @@ forecast = model.predict(future)
 plt = model.plot(forecast)
 comp = model.plot_components(forecast)
 
-predictions = forecast["yhat"].values[-744:]
+pred= forecast["yhat"].values[-744:]
