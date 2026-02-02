@@ -1,4 +1,4 @@
-from pygam import LinearGAM, s, f
+from pygam import LinearGAM, s, f, l
 import pandas as pd
 
 
@@ -19,4 +19,3 @@ jan_data = data[(data['year']==next_year) & (data['month']==1)]
 X_jan = jan_data[['year','month','day','hour']].values
 
 pred = modelFit.predict(X_jan)
-
